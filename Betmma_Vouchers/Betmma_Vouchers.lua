@@ -2,9 +2,9 @@
 --- MOD_NAME: Betmma Vouchers
 --- MOD_ID: BetmmaVouchers
 --- MOD_AUTHOR: [Betmma]
---- MOD_DESCRIPTION: 58 Vouchers and 24 Fusion Vouchers! v3.0.2.2
+--- MOD_DESCRIPTION: 58 Vouchers and 24 Fusion Vouchers! v3.0.2.3
 --- PREFIX: betm_vouchers
---- VERSION: 3.0.2.2(20250504)
+--- VERSION: 3.0.2.3(20250519)
 --- BADGE_COLOUR: ED40BF
 --- PRIORITY: -1
 
@@ -2187,18 +2187,18 @@ do
        
     end
 
-    local eval_card_ref=eval_card
-    function eval_card(card, context) -- debuffed card won't call this
-        local ret = {eval_card_ref(card,context)}
-        G.GAME.scoring_hand=context.scoring_hand
-        if context.cardarea == G.play and context.main_scoring and not context.repetition_only and (card.ability.set == 'Default' or card.ability.set == 'Enhanced') and used_voucher('double_flipped_card') and card.facing_ref=='back' then
-            if (not card.shattered) and (not card.destroyed) then 
-                draw_card_immediately(G.play,G.hand, 0.1,'down', false, card)
-                card.facing_ref=card.facing
-            end
-        end
-        return unpack(ret)
-    end
+    -- local eval_card_ref=eval_card -- removing when looping caused some cards not placed to hand
+    -- function eval_card(card, context) -- debuffed card won't call this
+    --     local ret = {eval_card_ref(card,context)}
+    --     G.GAME.scoring_hand=context.scoring_hand
+    --     if context.cardarea == G.play and context.main_scoring and not context.repetition_only and (card.ability.set == 'Default' or card.ability.set == 'Enhanced') and used_voucher('double_flipped_card') and card.facing_ref=='back' then
+    --         if (not card.shattered) and (not card.destroyed) then 
+    --             draw_card_immediately(G.play,G.hand, 0.1,'down', false, card)
+    --             card.facing_ref=card.facing
+    --         end
+    --     end
+    --     return unpack(ret)
+    -- end
     
     function draw_card_immediately(from, to, percent, dir, sort, card, delay, mute, stay_flipped, vol, discarded_only)
         -- the value of hand is calculated immediately, and the animation takes time. The vanilla draw_card includes add_event which isn't immediate, but in eval_card we need to immediately move the double_flipped_card to hand so that in following calculation G.hand will include these cards.

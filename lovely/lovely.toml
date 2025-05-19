@@ -336,3 +336,29 @@ if (self.group_key=='k_arcana_pack' or self.group_key=='k_spectral_pack') and us
 end
 '''
 match_indent = true
+
+
+# Double Flipped Card move card to hand after looping through main calculation (prevent removing when looping)
+
+[[patches]]
+[patches.pattern]
+target = "functions/state_events.lua"
+pattern = '''SMODS.calculate_main_scoring({cardarea = v, full_hand = G.play.cards, scoring_hand = scoring_hand, scoring_name = text, poker_hands = poker_hands}, v == G.play and scoring_hand or nil)'''
+position = "after"
+payload = '''
+if v==G.play then
+    local index=1
+    while index<=#G.play.cards do
+        local card=G.play.cards[index]
+        if (card.ability.set == 'Default' or card.ability.set == 'Enhanced') and used_voucher('double_flipped_card') and card.facing_ref=='back' then
+            if (not card.shattered) and (not card.destroyed) then 
+                draw_card_immediately(G.play,G.hand, 0.1,'down', false, card)
+                card.facing_ref=card.facing
+                index=index-1
+            end
+        end
+        index=index+1
+    end
+end
+'''
+match_indent = true
